@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shibuya - Encuentra tu salón</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #fdfdfd;
+            --card-bg: #ffffff;
+            --text-dark: #333;
+            --whatsapp-green: #25d366;
+            --google-blue: #4285f4;
+            --shibuya-red: #e60000;
+            --footer-bg: #f8f8f8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* DESTACADOS */
+        .fantasia {
+            font-weight: bold;
+            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .destacado-rojo {
+            color: var(--shibuya-red);
+            font-weight: bold;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: white;
+        }
+
+        .main-logo {
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            color: #555;
+            margin: 0;
+        }
+
+        /* GRID DE SALONES */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .container { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .salon-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+
+        /* CARRUSEL */
+        .carousel-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .slides {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth; /* Faz a transição ser suave */
+        }
+
+        .slides::-webkit-scrollbar { display: none; }
+
+        .slides img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+
+        /* BOTÕES DO CARROSSEL (NOVOS) */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: 0.3s;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+        }
+
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .salon-info {
+            padding: 25px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .salon-logo-small {
+            height: 60px;
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
+        .salon-info h2 { font-size: 1.3rem; margin: 10px 0; }
+
+        .salon-info p { font-size: 0.95rem; color: #666; margin-bottom: 20px; min-height: 80px; }
+
+        /* BOTONES */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+
+        .btn {
+            text-decoration: none !important;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-wa { background-color: var(--whatsapp-green); color: white !important; }
+        .btn-ig { background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white !important; }
+        .btn-gm { background-color: white; color: var(--google-blue) !important; border: 1px solid var(--google-blue); }
+
+        /* SECCIÓN WHATSAPP GENERAL (ANTES DEL FOOTER) */
+        .general-contact {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fff;
+        }
+
+        .btn-general-wa {
+            display: inline-flex;
+            background-color: var(--whatsapp-green);
+            color: white !important;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none !important;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        /* RODAPIÉ (FOOTER) ESTILO IMAGEN */
+        .site-footer {
+            background-color: var(--footer-bg);
+            padding: 50px 0 20px 0;
+            color: #555;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer-logo-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo-text img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            text-decoration: none;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .footer-col ul li a:hover { color: #000; }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 1.5rem;
+        }
+
+        .social-icons a { color: #666; transition: 0.3s; }
+        .social-icons a:hover { color: var(--whatsapp-green); }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-bottom-links a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content { flex-direction: column; text-align: left; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+        }
+
+    </style>
+</head>
+<body>
+
+<header id="inicio">
+     <img src="https://i.imgur.com/e744MQ1.jpeg" alt="Shibuya Logo" class="main-logo">
+    <h1>Cada estilo tiene su espacio, encuentra tu salón <strong>Shibuya</strong></h1>
+</header>
+
+<div class="container" id="salones">
+    <!-- SALÓN 1 (Com 2 imagens para teste) -->
+ <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="https://i.imgur.com/qfQBeiz.jpeg" alt="Shibuya Colorful">
+                <img src="https://i.imgur.com/ju9bH5h.jpeg" alt="Cabelo Loiro">
+                <img src="https://i.imgur.com/ieo21s1.jpeg" alt="Cabelo Vermelho">
+                <img src="https://i.imgur.com/wChSmgc.jpeg" alt="Cabelo Azul">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="https://i.imgur.com/oFXZRGR.jpeg" class="salon-logo-small" alt="Logo S2">
+            <h2>Shibuya Colorful Intention</h2>
+            <p>Calle Mallorca 61. Expertos en <span class="fantasia">colores fantasía</span> vibrantes y técnicas modernas.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34641127118" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyaencants" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/mcS2HQgwJC38axDu5" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 2 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="https://i.imgur.com/1Kq04y3.jpeg" alt="Salón 2">
+                <img src="https://i.imgur.com/K2nbntH.jpeg" alt="Cabelo Verde">
+                <img src="https://i.imgur.com/bFUuTL1.jpeg" alt="Cabelo Vermelho">
+                <img src="https://i.imgur.com/L2B494N.jpeg" alt="Cabelo Rosa">
+                
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="https://i.imgur.com/cNqbvSr.jpeg" class="salon-logo-small" alt="Logo S2">
+            <h2>Shibuya Colorful Intention</h2>
+            <p>Calle Aragón 528. Tu espacio para <span class="fantasia">colores fantasía</span> extremos y transformaciones radicales.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34641127118" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyaencants" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/mcS2HQgwJC38axDu5" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 3 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="IMG_S3_1.jpg" alt="Salón 3">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="LOGO_COLORFUL.png" class="salon-logo-small" alt="Logo S3">
+            <h2>Shibuya Colorful Intention</h2>
+            <p>Ronda Ponent 181 (Sabadell). Peluquería especialista en <span class="fantasia">colores fantasía</span> con influencias japonesas.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34623117077" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyasabadell" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/GebDFXvCe5QhiqS3A" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 4 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="IMG_S4_1.jpg" alt="Salón 4">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="LOGO_JAPAN.png" class="salon-logo-small" alt="Logo S4">
+            <h2>Shibuya Japan Hair Salon</h2>
+            <p>Calle Mallorca 65. <span class="destacado-rojo">Peluqueros japoneses</span> especializados en cabellos asiáticos. Estilo clásico.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34663252525" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuya84" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/5jFPHqAftgRHCgXy5" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 5 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="IMG_S5_1.jpg" alt="Salón 5">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="LOGO_LOTUS.png" class="salon-logo-small" alt="Logo S5">
+            <h2>Shibuya Nails Lotus</h2>
+            <p>Calle Mallorca 75. Diseños de uñas únicos y creativos. Manicura y pedicura especializada.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34604940122" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyanails" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/CVAteCNsKcsjiMiR9" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 6 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="IMG_S6_1.jpg" alt="Salón 6">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="LOGO_STUDIO.png" class="salon-logo-small" alt="Logo S6">
+            <h2>Shibuya Studio Poblenou</h2>
+            <p>Calle Ramón Turró 315. Salón premium. Micropigmentación, microblading, pestañas y belleza integral.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34624977187" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyapoblenou" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://maps.app.goo.gl/nrfR95E5W3HEZC1P6" target="_blank" rel="noopener noreferrer" class="btn btn-gm"><i class="fab fa-google"></i> Google Maps</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- SALÓN 7 -->
+    <article class="salon-card">
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="slides">
+                <img src="IMG_S7_1.jpg" alt="Salón 7">
+            </div>
+            <button class="carousel-btn next-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="salon-info">
+            <img src="LOGO_EXT.png" class="salon-logo-small" alt="Logo S7">
+            <h2>Shibuya Extensiones</h2>
+            <p>Servicio Itinerante (Barcelona / Sabadell). Extensiones de calidad premium para volumen y largo.</p>
+            <div class="btn-group">
+                <a href="https://wa.me/34678873520" target="_blank" rel="noopener noreferrer" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.instagram.com/shibuyaextensiones" target="_blank" rel="noopener noreferrer" class="btn btn-ig"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="#" class="btn btn-gm"><i class="fab fa-google"></i> Consultar Disponibilidad</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<!-- SOPORTE GENERAL -->
+<div class="general-contact" id="contacto">
+    <h3>¿Tienes dudas? Consulta con nosotros</h3>
+    <p>Atención al cliente general para presupuestos y consejos personalizados.</p>
+    <a href="https://wa.me/34665306090" target="_blank" rel="noopener noreferrer" class="btn-general-wa">
+        <i class="fab fa-whatsapp"></i> WhatsApp Atención General
+    </a>
+</div>
+
+<!-- RODAPIÉ (FOOTER) BASADO EN LA IMAGEN -->
+<footer class="site-footer">
+    <div class="footer-content">
+        <!-- Columna 1: Logo y Descripción -->
+        <div class="footer-col">
+            <div class="footer-logo-text">
+                <img src="LOGO_NEGRO.png" alt="Shibuya Logo">
+                <h2 style="margin:0; font-size: 1.4rem;">Shibuya</h2>
+            </div>
+            <p>Red de salones especializados en Barcelona. Cada estilo tiene su espacio.</p>
+        </div>
+
+        <!-- Columna 2: Enlaces rápidos -->
+        <div class="footer-col">
+            <h4>Enlaces rápidos</h4>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#salones">Salones</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+
+        <!-- Columna 3: Redes Sociales -->
+        <div class="footer-col">
+            <h4>Síguenos</h4>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/shibuyahairsalons" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/34665306090" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parte inferior: Copyright y Legal -->
+    <div class="footer-bottom">
+        <div>© 2026 Shibuya. Todos los derechos reservados.</div>
+        <div class="footer-bottom-links">
+            <a href="#">Política de privacidad</a>
+            <a href="#">Términos de servicio</a>
+        </div>
+    </div>
+</footer>
+
+<!-- SCRIPT PARA O CARROSSEL FUNCIONAR (NOVO) -->
+<script>
+    function scrollCarousel(btn, direction) {
+        // Encontra o container do carrossel onde o botão foi clicado
+        const container = btn.parentElement;
+        const slides = container.querySelector('.slides');
+        
+        // Calcula a largura de uma imagem
+        const slideWidth = slides.clientWidth;
+        
+        // Move o scroll para a esquerda ou direita
+        slides.scrollBy({
+            left: direction * slideWidth,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+</body>
+</html>
