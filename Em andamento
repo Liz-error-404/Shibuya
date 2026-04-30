@@ -355,8 +355,8 @@
         <div class="carousel-container">
             <button class="carousel-btn prev-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
             <div class="slides">
-                <img src="https://i.imgur.com/YXnVxd9.jpeg" alt="Salón 4"
-                <img src="https://i.imgur.com/Zf96rZW.jpeg" alt="Cabelo 1"
+                <img src="https://i.imgur.com/YXnVxd9.jpeg" alt="Salón 4" >
+                <img src="https://i.imgur.com/Zf96rZW.jpeg" alt="Cabelo 1" >
                 <img src="https://i.imgur.com/xq326ns.jpeg" alt="Cabelo 2" style="object-fit: contain !important; background-color: #ffffff; padding: 15px; box-sizing: border-box;">
                 <img src="https://i.imgur.com/sMlKmtc.jpeg" alt="Cabelo 3" style="object-fit: contain !important; background-color: #ffffff; padding: 15px; box-sizing: border-box;">
             </div>
@@ -461,7 +461,7 @@
         <div class="footer-col">
             <div class="footer-logo-text">
                 <img src="https://i.imgur.com/2mpn5Ql.jpeg" alt="Shibuya Logo">
-                <h2 style="margin:0; font-size: 1.4rem;">Shibuya</h2>
+                <h2 style="margin:1; font-size: 1.4rem;">Shibuya</h2>
             </div>
             <p>Red de salones especializados en Barcelona. Cada estilo tiene su espacio.</p>
         </div>
